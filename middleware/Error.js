@@ -1,10 +1,18 @@
 const errorMiddleware = (err, req, res, next) => {
-    console.error(err.message)
+    console.error(err)
     let customError = {
-        statusCode: 500,
-        msg: "Something went wrong, please try again later"
+        statusCode: err.statusCode || 501,
+        msg: err.message || "Something went wrong, please try again later"
     }
-    return res.status(customError.statusCode).json({msg: err.message || customError.msg})
+    if (err.name === "ValidationError") {
+        customError.statusCode = 400
+        customError.msg = Object.values(err.errors).map(i => i.message).join(" \n ")
+    }
+    if (err.code && err.code == 11000) {
+        customError.statusCode = 400;
+        customError.msg = `Value is exits for: ${Object.keys(err.keyValue)} field, please provide another value`
+    }
+    return res.status(customError.statusCode).json({msg: customError.msg})
 }
 
 export default errorMiddleware
