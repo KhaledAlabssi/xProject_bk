@@ -4,4 +4,9 @@ Auth Plan:
     on register: create user without generating tokens or cookies
     generate confirming email functionality
     after confirming email, user can login
+
+    Consider:
+        User roles
+        cookies token "not headers authorization"
+        steps for forgot password and verify email
     
