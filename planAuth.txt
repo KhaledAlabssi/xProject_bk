@@ -1,0 +1,7 @@
+Auth Plan:
+    register => verify email => login => auth links
+    Details:
+    on register: create user without generating tokens or cookies
+    generate confirming email functionality
+    after confirming email, user can login
+    
