@@ -6,6 +6,7 @@ import notFoundMiddleware from './middleware/notFound.js'
 import errorMiddleware from './middleware/Error.js'
 import 'express-async-errors'
 import morgan from 'morgan'
+import authRouter from './routes/authRoute.js'
 
 dotenv.config()
 const app = express()
@@ -13,9 +14,12 @@ app.use(morgan('dev'))
 app.use(express.json())
 app.use(cors())
 
+
 app.get("/", (req, res) => {
     res.status(200).json({msg: "hello from home route of xProject"})
 })
+
+app.use('/api/auth', authRouter)
 
 // testing error middleware
 app.get("/err", () => {
