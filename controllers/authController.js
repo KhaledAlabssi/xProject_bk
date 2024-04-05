@@ -1,7 +1,7 @@
 import User from '../models/user.js'
+import { creatToken } from '../util/jwt.js';
 
-
-const register = async (req, res) => {
+const signup = async (req, res) => {
     // const { email } = req.body;
     // const emailExists = await User.findOne({ email })
     // if (emailExists) {
@@ -11,8 +11,16 @@ const register = async (req, res) => {
 
     // user can't register as admin, it should be done manually for now
     const { name, password, email } = req.body;
-    const user = await User.create({name, password, email})
-    res.status(201).json({user})
+    const user = await User.create({ name, password, email })
+    const tokenInfo = {name: user.name, userId: user._id, role: user.role}
+    const token = creatToken({ payload: tokenInfo })
+    res.cookie('token', token, {
+        withCredentials: true,
+        httpOnly: true,
+        expires: new Date( Date.now() + 1000 * 60 * 60 * 24 * 7)
+
+    })
+    res.status(201).json({user: tokenInfo, success: true})
 }
 
 const login = async (req, res) => {
@@ -23,4 +31,4 @@ const logout = async (req, res) => {
     res.status(200).json({ msg: "logout user" })
 }
 
-export {register, login, logout}
+export {signup, login, logout}
