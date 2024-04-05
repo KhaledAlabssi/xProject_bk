@@ -1,5 +1,5 @@
 import User from '../models/user.js'
-import { creatToken } from '../util/jwt.js';
+import { tokenToResponse } from '../util/jwt.js';
 
 const signup = async (req, res) => {
     // const { email } = req.body;
@@ -12,14 +12,10 @@ const signup = async (req, res) => {
     // user can't register as admin, it should be done manually for now
     const { name, password, email } = req.body;
     const user = await User.create({ name, password, email })
-    const tokenInfo = {name: user.name, userId: user._id, role: user.role}
-    const token = creatToken({ payload: tokenInfo })
-    res.cookie('token', token, {
-        withCredentials: true,
-        httpOnly: true,
-        expires: new Date( Date.now() + 1000 * 60 * 60 * 24 * 7)
-
-    })
+    const tokenInfo = { name: user.name, userId: user._id, role: user.role }
+    tokenToResponse({res, user: tokenInfo})
+    
+    
     res.status(201).json({user: tokenInfo, success: true})
 }
 

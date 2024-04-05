@@ -7,16 +7,26 @@ import errorMiddleware from './middleware/Error.js'
 import 'express-async-errors'
 import morgan from 'morgan'
 import authRouter from './routes/authRoute.js'
+import cookieParser from 'cookie-parser'
 
 dotenv.config()
 const app = express()
 app.use(morgan('dev'))
 app.use(express.json())
+app.use(cookieParser(process.env.JWT_SECRET))
 app.use(cors())
 
 
 app.get("/", (req, res) => {
     res.status(200).json({msg: "hello from home route of xProject"})
+})
+
+// cookies test router, should be removed before production
+app.get("/api/cookie", (req, res) => {
+    console.log(req.cookies)
+    console.log(req.signedCookies);
+    res.send("cookies been logged")
+
 })
 
 app.use('/api/auth', authRouter)
