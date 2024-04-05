@@ -14,7 +14,6 @@ const isTokenValid = ({ token }) => {
 const tokenToResponse = ({ res, user }) => {
     const token = creatToken({ payload: user })
     res.cookie('token', token, {
-        withCredentials: true,
         httpOnly: true,
         signed: true,
         secure: process.env.NODE_ENV === 'production',

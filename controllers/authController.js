@@ -20,11 +20,34 @@ const signup = async (req, res) => {
 }
 
 const login = async (req, res) => {
-    res.status(200).json({ msg: "login user" })
+    const { email, password } = req.body
+    if (!email || !password) {
+        throw new Error("Please provide email and password")
+    }
+    const user = await User.findOne({ email })
+    if (!user) {
+        throw new Error("Invalid email or password")
+    }
+    const correctPassword = await user.comparePassword(password)
+    if (!correctPassword) {
+        throw new Error("Invalid email or password")
+    }
+
+    const tokenInfo = { name: user.name, userId: user._id, role: user.role }
+    tokenToResponse({ res, user: tokenInfo })
+
+    res.status(200).json({ user: tokenInfo, success: true })
 }
 
 const logout = async (req, res) => {
-    res.status(200).json({ msg: "logout user" })
+    res.cookie("token", "empty_token", {
+        httpOnly: true,
+        signed: true,
+        secure: process.env.NODE_ENV === 'production',
+        expires: new Date(Date.now())
+    })
+
+    res.status(200).json({ msg: "logout user", success: true })
 }
 
 export {signup, login, logout}
