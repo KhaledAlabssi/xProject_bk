@@ -13,7 +13,7 @@ const updateProfile = async (req, res) => {
     if (!email || !name) {
         throw new CustomError("Please provide all values")
     }
-    const user = User.findOne({ _id: req.user.userId })
+    const user = await User.findOne({ _id: req.user.userId })
     user.email = email
     user.name = name
     await user.save()
