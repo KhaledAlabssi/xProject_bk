@@ -10,6 +10,7 @@ import authRouter from './routes/authRoute.js'
 import cookieParser from 'cookie-parser'
 import { userAuthentication } from './middleware/authentication.js'
 import { adminAuthorization } from './middleware/authorization.js'
+import userRouter from './routes/userRoute.js'
 
 dotenv.config()
 const app = express()
@@ -42,6 +43,7 @@ app.get('/api/admin', userAuthentication, adminAuthorization, (req, res) => {
 })
 
 app.use('/api/auth', authRouter)
+app.use('/api/user', userRouter)
 
 // testing error middleware
 app.get("/err", () => {
