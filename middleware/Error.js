@@ -12,7 +12,7 @@ const errorMiddleware = (err, req, res, next) => {
         customError.statusCode = 400;
         customError.msg = `Value is exits for: ${Object.keys(err.keyValue)} field, please provide another value`
     }
-    return res.status(customError.statusCode).json({msg: customError.msg})
+    return res.status(customError.statusCode).json({msg: customError.msg, success: false})
 }
 
 export default errorMiddleware

@@ -8,6 +8,7 @@ import 'express-async-errors'
 import morgan from 'morgan'
 import authRouter from './routes/authRoute.js'
 import cookieParser from 'cookie-parser'
+import { userAuthentication } from './middleware/authentication.js'
 
 dotenv.config()
 const app = express()
@@ -17,7 +18,7 @@ app.use(cookieParser(process.env.JWT_SECRET))
 app.use(cors())
 
 
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
     res.status(200).json({msg: "hello from home route of xProject"})
 })
 
@@ -27,6 +28,11 @@ app.get("/api/cookie", (req, res) => {
     console.log(req.signedCookies);
     res.send("cookies been logged")
 
+})
+
+// authentication test, should be removed before production
+app.get('/api/authenticated', userAuthentication, (req, res) => {
+    res.status(200).json({msg: "You are authenticated user", success: true})
 })
 
 app.use('/api/auth', authRouter)
