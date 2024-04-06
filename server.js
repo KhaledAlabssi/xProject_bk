@@ -43,7 +43,7 @@ app.get('/api/admin', userAuthentication, adminAuthorization, (req, res) => {
 })
 
 app.use('/api/auth', authRouter)
-app.use('/api/user', userRouter)
+app.use('/api/user', userAuthentication, userRouter)
 
 // testing error middleware
 app.get("/err", () => {
