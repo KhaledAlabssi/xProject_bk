@@ -9,6 +9,7 @@ import morgan from 'morgan'
 import authRouter from './routes/authRoute.js'
 import cookieParser from 'cookie-parser'
 import { userAuthentication } from './middleware/authentication.js'
+import { adminAuthorization } from './middleware/authorization.js'
 
 dotenv.config()
 const app = express()
@@ -33,6 +34,11 @@ app.get("/api/cookie", (req, res) => {
 // authentication test, should be removed before production
 app.get('/api/authenticated', userAuthentication, (req, res) => {
     res.status(200).json({msg: "You are authenticated user", success: true})
+})
+
+// authorization test, should be removed before production
+app.get('/api/admin', userAuthentication, adminAuthorization, (req, res) => {
+    res.status(200).json({msg: "You are an admin user", success: true})
 })
 
 app.use('/api/auth', authRouter)
