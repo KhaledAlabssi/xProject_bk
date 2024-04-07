@@ -26,7 +26,20 @@ const signup = async (req, res) => {
 
 const verifyEmail = async (req, res) => {
     const { verificationToken, email } = req.body
-    res.status(200).json({verificationToken, email})
+    const user = await User.findOne({ email })
+    if (!user) {
+        throw new CustomError("Verification failed", 403)
+    }
+
+    if (user.verificationToken !== verificationToken) {
+        throw new CustomError("Verification failed", 403)
+    }
+
+    user.isVerified = true;
+    user.VerifiedAt = Date.now()
+    user.verificationToken = ''
+    await user.save()
+    res.status(200).json({msg: "Email has been verified", success: true})
 }
 
 const login = async (req, res) => {
