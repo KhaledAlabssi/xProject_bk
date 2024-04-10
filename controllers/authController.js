@@ -2,6 +2,8 @@ import CustomError from '../errors/customError.js';
 import User from '../models/user.js'
 import { tokenToResponse } from '../util/jwt.js';
 import crypto from 'crypto'
+import {VerificationEmail} from '../util/email.js';
+
 
 const signup = async (req, res) => {
     // const { email } = req.body;
@@ -15,11 +17,8 @@ const signup = async (req, res) => {
 
     const verificationToken = crypto.randomBytes(32).toString("hex")
     const user = await User.create({ name, password, email, verificationToken })
-    // const tokenInfo = { name: user.name, userId: user._id, role: user.role}
-    // tokenToResponse({res, user: tokenInfo})
-
-
-    // res.status(201).json({user: tokenInfo, success: true})
+    const origin = process.env.NODE_ENV === 'production' ? process.env.URL_ORIGIN : "http://localhost:3000"
+    await VerificationEmail({name:user.name, email: user.email, verificationToken: user.verificationToken, origin})
     // send verification only in postman for now
     res.status(200).json({ msg: "please check your email for verificaiton", success: true, verificationToken: user.verificationToken })
 }
